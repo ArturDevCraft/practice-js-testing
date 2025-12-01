@@ -11,3 +11,10 @@ it('When in scope passed nor number throw error', () => {
 	}
 	expect(number).toThrow();
 });
+
+it('When min > max throw error', () => {
+	function number() {
+		randomNumber(3, 1);
+	}
+	expect(number).toThrow();
+});
