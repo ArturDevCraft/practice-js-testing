@@ -18,3 +18,11 @@ it('When min > max throw error', () => {
 	}
 	expect(number).toThrow();
 });
+
+it('Check number is between min and max', () => {
+	const min = 1;
+	const max = 10;
+	const number = randomNumber(min, max);
+	expect(number).toBeLessThanOrEqual(max);
+	expect(number).toBeGreaterThanOrEqual(min);
+});
