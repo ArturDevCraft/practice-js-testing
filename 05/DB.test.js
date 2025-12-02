@@ -1,13 +1,26 @@
 import DB from './DB';
 
-describe('insert, select', () => {
+describe('Add and get data ', () => {
 	it('Check insert and select works', () => {
-		expect.assertions(1);
+		expect.assertions(2);
 		const db = new DB();
 		return db.insert({ id: 2 }).then((data) => {
+			expect(data.id).toBe(2);
 			const promise = db.select(2);
 			return promise.then((data) => {
 				expect(data.id).toBe(2);
+			});
+		});
+	});
+
+	it('getRows()', () => {
+		expect.assertions(2);
+		const db = new DB();
+		return db.insert({ id: 899 }).then((data) => {
+			const promise = db.getRows();
+			return promise.then((data) => {
+				expect(data.length).toBe(1);
+				expect(data[0].id).toBe(899);
 			});
 		});
 	});
@@ -35,9 +48,93 @@ describe('insert, select', () => {
 	it('Error when value not found', () => {
 		expect.assertions(1);
 		const db = new DB();
-		const promise = db.w(99999);
+		const promise = db.select(99999);
 		return promise.catch((err) => {
 			expect(err).toBe('ID not found');
+		});
+	});
+});
+
+describe('Update and delete data', () => {
+	it('remove', () => {
+		expect.assertions(2);
+		const db = new DB();
+		const id = 125;
+
+		//insert example data
+		return db.insert({ id }).then((data) => {
+			//remove element
+			const promise = db.remove(id);
+			return promise
+				.then((data) => {
+					expect(data).toBe('Item was remove!');
+				})
+				.then(() => {
+					//check element doesn't exist in db
+					const promise = db.select(id);
+					return promise.catch((err) => expect(err).toBe('ID not found'));
+				});
+		});
+	});
+
+	it('update', () => {
+		expect.assertions(2);
+		const db = new DB();
+		const id = 125;
+		const updatedData = { data: 'test' };
+
+		//insert example data
+		return db.insert({ id }).then((data) => {
+			//update element
+			const promise = db.update({ id, ...updatedData });
+			return promise
+				.then((data) => {
+					expect(data.id).toBe(id);
+				})
+				.then(() => {
+					//check element exists in db
+					const promise = db.select(id);
+					return promise.then((data) =>
+						expect(data.data).toBe(updatedData.data)
+					);
+				});
+		});
+	});
+
+	it('Error when updating id not found', () => {
+		expect.assertions(1);
+
+		const db = new DB();
+		return db
+			.update({ id: 23, data: 'test' })
+			.catch((err) => expect(err).toBe('ID not found!'));
+	});
+
+	it('Error when removing item not found', () => {
+		expect.assertions(1);
+
+		const db = new DB();
+		return db.remove(23).catch((err) => expect(err).toBe('Item not exist!'));
+	});
+
+	it('truncate', () => {
+		expect.assertions(2);
+		const db = new DB();
+		const id = 125;
+
+		//insert example data
+		return db.insert({ id }).then((data) => {
+			//truncate
+			const promise = db.truncate();
+			return promise
+				.then((data) => {
+					expect(data).toBe(true);
+				})
+				.then(() => {
+					//check db is empty
+					const promise = db.getRows();
+					return promise.then((data) => expect(data.length).toBe(0));
+				});
 		});
 	});
 });
