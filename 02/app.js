@@ -25,15 +25,19 @@ function initEventWithError(element, eventName, error) {
 		try {
 			setRandomPosition(this, error);
 		} catch (err) {
-			const alert = document.querySelector('.alert');
-			const message = alert.querySelector('.alert__message');
-			alert.addEventListener('click', (e) => {
-				if (e.target === e.currentTarget) {
-					alert.classList.add('alert--hidden');
-				}
-			});
-			alert.classList.remove('alert--hidden');
-			message.innerText = err.message;
+			showAlertBox(err);
 		}
 	});
+}
+
+function showAlertBox(err) {
+	const alert = document.querySelector('.alert');
+	const message = alert.querySelector('.alert__message');
+	alert.addEventListener('click', (e) => {
+		if (e.target === e.currentTarget) {
+			alert.classList.add('alert--hidden');
+		}
+	});
+	alert.classList.remove('alert--hidden');
+	message.innerText = err.message;
 }

@@ -5,11 +5,18 @@ it('When scope 1 - 1 return 1', () => {
 	expect(number).toBe(1);
 });
 
-it('When in scope passed nor number throw error', () => {
+it('When min value is not number throw error', () => {
 	function number() {
 		randomNumber('a', 1);
 	}
-	expect(number).toThrow();
+	expect(number).toThrow('Min value schould be expressed as a number');
+});
+
+it('When max value is not number throw error', () => {
+	function number() {
+		randomNumber(1, 'a');
+	}
+	expect(number).toThrow('Max value schould be expressed as a number');
 });
 
 it('When min > max throw error', () => {

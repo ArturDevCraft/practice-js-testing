@@ -16,11 +16,12 @@ describe('Add and get data ', () => {
 	it('getRows()', () => {
 		expect.assertions(2);
 		const db = new DB();
-		return db.insert({ id: 899 }).then((data) => {
+		const id = 899;
+		return db.insert({ id: id }).then((data) => {
 			const promise = db.getRows();
 			return promise.then((data) => {
 				expect(data.length).toBe(1);
-				expect(data[0].id).toBe(899);
+				expect(data[0].id).toBe(id);
 			});
 		});
 	});
